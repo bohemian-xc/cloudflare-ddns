@@ -1,0 +1,32 @@
+services:
+  cloudflare-ddns:
+    build: .
+    # Choose the appropriate tag based on your need:
+    image: cloudflare-ddns
+    # This bypasses network isolation and makes IPv6 easier (optional; see below)
+    network_mode: host
+    # Restart the updater after reboot
+    restart: always
+    # Run the updater with specific user and group IDs (in that order).
+    # You can change the two numbers based on your need.
+    user: "1000:1000"
+    # Make the container filesystem read-only (optional but recommended)
+    read_only: true
+    # Drop all Linux capabilities (optional but recommended)
+    cap_drop: [all]
+    # Another protection to restrict superuser privileges (optional but recommended)
+    security_opt: [no-new-privileges:true]
+    environment:
+        # Your Cloudflare API token
+      - CLOUDFLARE_API_TOKEN=${CF_API_TOKEN}
+        # Your domains (separated by commas)
+      - DOMAINS=${CF_DOMAINS}
+        # Tell Cloudflare to cache webpages and hide your IP (optional)
+      - PROXIED=${CF_PROXIED}
+#networks:
+#  LAN0:
+#    external: true
+#    name: LAN0
+# Introduce custom Docker networks to the 'services' in this file. A common use case
+# for this is binding one of the 'services' to a specific network interface available at
+# Docker's host. This section is required for the 'networks' section of each 'services'.
